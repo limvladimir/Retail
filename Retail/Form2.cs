@@ -16,17 +16,19 @@ namespace Retail
     public partial class Form2 : Form
     {
         SerialPort Serial;
+        string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Владимир\source\repos\Retail\Retail\Database1.mdf;Integrated Security=True";
         public Form2()
         {
             InitializeComponent();
 
             LoadData();
         }
- 
+
         private void Form2_Load(object sender, EventArgs e)
         {
-    
+
         }
+
         public void Clear(DataGridView dataGridView)
         {
             while (dataGridView.Rows.Count > 1)
@@ -34,12 +36,39 @@ namespace Retail
                     dataGridView.Rows.Remove(dataGridView.Rows[i]);
         }
 
+        private void DataCollection()
+        {
+            SqlConnection sqlConn = new SqlConnection(connectionString);
+            List<SqlParameter> sqlParams = new List<SqlParameter>();
+            DataTable tableInvent = new DataTable();
+
+            if (Serial.IsOpen)
+            {
+                string data = Serial.ReadExisting();
+
+                char[] separator = { '\r', '\n', ',' };
+                if (data != Serial.ReadExisting())
+                {
+                    foreach (string s in data.Split(separator, StringSplitOptions.RemoveEmptyEntries))  //разбиваем на строки
+                    {
+                        string[] ss = s.Split(';');
+                        sqlParams.Add(new SqlParameter("Name", ss[0]));
+                        sqlParams.Add(new SqlParameter("Kind", ss[1]));
+                        sqlParams.Add(new SqlParameter("Wholesale_price", ss[2]));
+                        sqlParams.Add(new SqlParameter("Retail_price", ss[3]));
+                        tableInvent = OperationWithDB.ExecuteSP("InsQrData", sqlParams);
+                    }
+                }
+            }
+        }
+        
+            
+            
         private void LoadData()
         {
             Clear(dataGridView1);
             SqlDataReader reader = null;
             //Строка подключения к базе данных
-            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Владимир\source\repos\Retail\Retail\Database1.mdf;Integrated Security=True";
             //Класс для подключения к базе данных
             SqlConnection myConnection = new SqlConnection(connectionString);
             //Открываем соеденение для подключения

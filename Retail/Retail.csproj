@@ -69,6 +69,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OperationWithDB.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
