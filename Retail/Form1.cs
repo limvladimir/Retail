@@ -40,10 +40,11 @@ namespace Retail
         private void button1_Click_1(object sender, EventArgs e)
         {
             QRCodeGenerator QG = new QRCodeGenerator();
-            var View = textBox1.Text;
-            var WholesalePrice = textBox2.Text;
-            var RetailPrice = textBox3.Text;
-            var QrImage = View + WholesalePrice + RetailPrice;
+            var Name = textBox1.Text;
+            var Kind = textBox2.Text;
+            var WholesalePrice = textBox3.Text;
+            var RetailPrice = textBox4.Text;
+            var QrImage = Name + Kind + WholesalePrice + RetailPrice;
             var MyData = QG.CreateQrCode(QrImage, QRCodeGenerator.ECCLevel.M);
             var Data = new QRCode(MyData);
             pictureBox1.Image = Data.GetGraphic(50);

@@ -19,7 +19,8 @@ namespace Retail
         /// <returns></returns>
         public static DataTable ExecuteSP(string spNAme, List<SqlParameter> sqlParams = null)
         {
-            string connect = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Владимир\source\repos\Retail\Retail\Database1.mdf;Integrated Security=True";
+            // string connect = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Владимир\source\repos\Retail\Retail\Database1.mdf;Integrated Security=True";
+            string connect = @"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = C:\Users\Владимир\source\repos\Retail — Тест1\Retail\Database1.mdf; Integrated Security = True";
             SqlConnection sqlConnect = new SqlConnection();
             DataTable dt = new DataTable();
 
@@ -31,6 +32,7 @@ namespace Retail
 
                 //создаём запрос 
                 SqlCommand sqlCommand = new SqlCommand(spNAme, sqlConnect);
+
                 sqlCommand.CommandType = CommandType.StoredProcedure;
                 sqlCommand.Parameters.AddRange(sqlParams.ToArray());
 
@@ -42,10 +44,10 @@ namespace Retail
                 dt.Load(dr);
             }
 
-            catch (Exception ex)
-            {
+             catch (Exception ex)
+             {
                 throw ex;
-            }
+             }
             finally
             {
                 sqlConnect.Close();
@@ -91,7 +93,8 @@ namespace Retail
         /// <param name="dataSet"> таблица DataSet</param>
         public static void SaveToInventarizationT(string sqlquery, DataSet dataSet)
         {
-            string connString = @"Data Source = localhost\SQLEXPRESS; Initial Catalog = Inventory; Integrated Security = True";
+            //string connString = @"Data Source = localhost\SQLEXPRESS; Initial Catalog = Inventory; Integrated Security = True";
+            string connString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Владимир\source\repos\Retail\Retail\Database1.mdf;Integrated Security=True";
             try
             {
                 using (SqlConnection connection = new SqlConnection(connString))

@@ -15,13 +15,15 @@ namespace Retail
 {
     public partial class Form2 : Form
     {
+        string connectionString = @"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = C:\Users\Владимир\source\repos\Retail — Тест1\Retail\Database1.mdf; Integrated Security = True";
+        //string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Владимир\source\repos\Retail\Retail\Database1.mdf;Integrated Security=True";
+        string product = "SELECT * FROM Product ORDER BY id";
         SerialPort Serial;
-        string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Владимир\source\repos\Retail\Retail\Database1.mdf;Integrated Security=True";
         public Form2()
         {
             InitializeComponent();
 
-            LoadData();
+            LoadData(product,dataGridView1);
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -51,12 +53,16 @@ namespace Retail
                 {
                     foreach (string s in data.Split(separator, StringSplitOptions.RemoveEmptyEntries))  //разбиваем на строки
                     {
+                        string sp = "InsQR";
                         string[] ss = s.Split(';');
-                        sqlParams.Add(new SqlParameter("Name", ss[0]));
-                        sqlParams.Add(new SqlParameter("Kind", ss[1]));
-                        sqlParams.Add(new SqlParameter("Wholesale_price", ss[2]));
-                        sqlParams.Add(new SqlParameter("Retail_price", ss[3]));
-                        tableInvent = OperationWithDB.ExecuteSP("InsQrData", sqlParams);
+                        sqlParams.Add(new SqlParameter("name", ss[0]));
+                        sqlParams.Add(new SqlParameter("kind", ss[1]));
+                        sqlParams.Add(new SqlParameter("price", ss[2]));
+                        sqlParams.Add(new SqlParameter("retail", ss[3]));
+                        tableInvent = OperationWithDB.ExecuteSP(sp, sqlParams);
+                        sqlParams.Clear();
+                        string query = "SELECT * FROM Scanned ORDER BY id";
+                        LoadData(query, dataGridView2);
                     }
                 }
             }
@@ -64,16 +70,15 @@ namespace Retail
         
             
             
-        private void LoadData()
+        private void LoadData(string query,DataGridView dataGridView)
         {
-            Clear(dataGridView1);
+            Clear(dataGridView);
             SqlDataReader reader = null;
             //Строка подключения к базе данных
             //Класс для подключения к базе данных
             SqlConnection myConnection = new SqlConnection(connectionString);
             //Открываем соеденение для подключения
             myConnection.Open();
-            string query = "SELECT * FROM Product ORDER BY id";
             SqlCommand command = new SqlCommand(query,myConnection);
             //Считывание данных с БД
             reader = command.ExecuteReader();
@@ -90,7 +95,7 @@ namespace Retail
             reader.Close();
             myConnection.Close();
             foreach (string[] s in data)
-                dataGridView1.Rows.Add(s);
+                dataGridView.Rows.Add(s);
 
         }
         private void GetComPort()
@@ -182,7 +187,7 @@ namespace Retail
 
         private void button2_Click(object sender, EventArgs e)
         {
-            LoadData();
+            LoadData(product,dataGridView1);
         }
 
         private void регистрацияToolStripMenuItem_Click(object sender, EventArgs e)
@@ -225,6 +230,11 @@ namespace Retail
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
             ConnectToComPort();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+           DataCollection();           
         }
     }
 }
