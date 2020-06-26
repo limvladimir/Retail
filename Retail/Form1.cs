@@ -40,11 +40,13 @@ namespace Retail
         private void button1_Click_1(object sender, EventArgs e)
         {
             QRCodeGenerator QG = new QRCodeGenerator();
+            var Semicolon = ";";
             var Name = textBox1.Text;
             var Kind = textBox2.Text;
             var WholesalePrice = textBox3.Text;
             var RetailPrice = textBox4.Text;
-            var QrImage = Name + Kind + WholesalePrice + RetailPrice;
+            var ProductNumber = textBox5.Text;
+            var QrImage = Name + Semicolon + Kind + Semicolon + WholesalePrice + Semicolon + RetailPrice + Semicolon + textBox5.Text;
             var MyData = QG.CreateQrCode(QrImage, QRCodeGenerator.ECCLevel.M);
             var Data = new QRCode(MyData);
             pictureBox1.Image = Data.GetGraphic(50);
@@ -103,9 +105,10 @@ namespace Retail
             if (!string.IsNullOrEmpty(textBox1.Text) && !string.IsNullOrWhiteSpace(textBox1.Text) &&
                 !string.IsNullOrEmpty(textBox2.Text) && !string.IsNullOrWhiteSpace(textBox2.Text) &&
                 !string.IsNullOrEmpty(textBox3.Text) && !string.IsNullOrWhiteSpace(textBox3.Text) &&
-                !string.IsNullOrEmpty(textBox4.Text) && !string.IsNullOrWhiteSpace(textBox4.Text) )
+                !string.IsNullOrEmpty(textBox4.Text) && !string.IsNullOrWhiteSpace(textBox4.Text) &&
+                !string.IsNullOrEmpty(textBox5.Text) && !string.IsNullOrWhiteSpace(textBox5.Text) )
             {
-                string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Владимир\source\repos\Retail\Retail\Database1.mdf;Integrated Security=True";
+                string connectionString = @"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = C:\Users\Владимир\source\repos\Retail — Тест1\Retail\Database1.mdf; Integrated Security = True";
                 SqlConnection myConnection = new SqlConnection(connectionString);
                 myConnection.Open();
                 /*var Name = textBox1.Text;
@@ -118,6 +121,7 @@ namespace Retail
                 command.Parameters.AddWithValue("Kind", textBox2.Text);
                 command.Parameters.AddWithValue("Wholesale_price", textBox3.Text);
                 command.Parameters.AddWithValue("Retail_price", textBox4.Text);
+                command.Parameters.AddWithValue("Product_number", textBox5.Text);
                 command.ExecuteNonQuery();
                 myConnection.Close();
             }
@@ -129,6 +133,16 @@ namespace Retail
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void textBox5_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
         {
 
         }

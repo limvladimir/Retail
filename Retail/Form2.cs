@@ -19,11 +19,12 @@ namespace Retail
         //string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Владимир\source\repos\Retail\Retail\Database1.mdf;Integrated Security=True";
         string product = "SELECT * FROM Product ORDER BY id";
         SerialPort Serial;
+        string Date;
         public Form2()
         {
             InitializeComponent();
 
-            LoadData(product,dataGridView1);
+            LoadData(product,dataGridView1,7);
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -47,7 +48,7 @@ namespace Retail
             if (Serial.IsOpen)
             {
                 string data = Serial.ReadExisting();
-
+                
                 char[] separator = { '\r', '\n', ',' };
                 if (data != Serial.ReadExisting())
                 {
@@ -62,15 +63,15 @@ namespace Retail
                         tableInvent = OperationWithDB.ExecuteSP(sp, sqlParams);
                         sqlParams.Clear();
                         string query = "SELECT * FROM Scanned ORDER BY id";
-                        LoadData(query, dataGridView2);
+                        LoadData(query, dataGridView2,6);
                     }
                 }
             }
         }
-        
-            
-            
-        private void LoadData(string query,DataGridView dataGridView)
+
+
+
+        private void LoadData(string query, DataGridView dataGridView, int size)
         {
             Clear(dataGridView);
             SqlDataReader reader = null;
@@ -85,12 +86,12 @@ namespace Retail
             List<string[]> data = new List<string[]>();
             while (reader.Read())
             {
-                data.Add(new string[5]);
-                data[data.Count - 1][0] = reader[0].ToString();
-                data[data.Count - 1][1] = reader[1].ToString();
-                data[data.Count - 1][2] = reader[2].ToString();
-                data[data.Count - 1][3] = reader[3].ToString();
-                data[data.Count - 1][4] = reader[4].ToString();
+                data.Add(new string[size]);
+                for (int i = 0; i < size; i++)
+                {
+                    data[data.Count - 1][i] = reader[i].ToString();
+                }
+
             }
             reader.Close();
             myConnection.Close();
@@ -187,7 +188,7 @@ namespace Retail
 
         private void button2_Click(object sender, EventArgs e)
         {
-            LoadData(product,dataGridView1);
+            LoadData(product,dataGridView1,7);
         }
 
         private void регистрацияToolStripMenuItem_Click(object sender, EventArgs e)
@@ -235,6 +236,29 @@ namespace Retail
         private void button5_Click(object sender, EventArgs e)
         {
            DataCollection();           
+        }
+        private void ResultInvent(string sql, string dataMember, DataGridView dataGrid)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlDataAdapter dataadapter = new SqlDataAdapter(sql, connection);
+            DataSet dst = new DataSet();
+            connection.Open();
+            dataadapter.Fill(dst, dataMember);
+            connection.Close();
+            dataGrid.DataSource = dst;
+            dataGrid.DataMember = dataMember;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            //ResultInvent("SELECT * FROM Inventarization i1 WHERE  EXISTS(SELECT * FROM EquipmentTable  i2 WHERE i1.inv_num = i2.equip_number)", "Inventarization", ResultDataGrid);
+            LoadData("SELECT Id, Item_name, Kind, Wholesale_price, Retail_price FROM Scanned i1 WHERE  EXISTS(SELECT * FROM Product i2 WHERE  i2.Name = i1.Item_name AND i2.Kind = i1.Kind AND i2.Wholesale_price=i1.Wholesale_price AND i2.Retail_price=i1.Retail_price )",dataGridView3,5);
+            
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            Date = DateTime.Now.ToShortDateString();
         }
     }
 }
