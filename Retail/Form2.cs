@@ -15,7 +15,7 @@ namespace Retail
 {
     public partial class Form2 : Form
     {
-        string connectionString = @"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = C:\Users\Владимир\source\repos\Retail — Тест1\Retail\Database1.mdf; Integrated Security = True";
+        string connectionString = @"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = C:\Users\Владимир\source\repos\Retail — Тест1\Retail\Database1.mdf;Integrated Security = True";
         //string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Владимир\source\repos\Retail\Retail\Database1.mdf;Integrated Security=True";
         string product = "SELECT * FROM Product ORDER BY id";
         SerialPort Serial;
@@ -235,7 +235,7 @@ namespace Retail
 
         private void button5_Click(object sender, EventArgs e)
         {
-           DataCollection();           
+                  
         }
         private void ResultInvent(string sql, string dataMember, DataGridView dataGrid)
         {
@@ -259,6 +259,17 @@ namespace Retail
         private void timer1_Tick(object sender, EventArgs e)
         {
             Date = DateTime.Now.ToShortDateString();
+            DataCollection();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            LoadData("SELECT * FROM Product WHERE Condition='Продан'", dataGridView1, 7);
+        }
+
+        private void tabPage2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
